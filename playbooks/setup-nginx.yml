@@ -1,0 +1,24 @@
+---
+- name: Install and run NGINX
+  hosts: all
+
+  tasks:
+    - name: Pull NGINX docker image
+      docker_image:
+        name: nginx:1.25.5
+        source: pull
+
+    - name: Create docker volume
+      docker_volume:
+        name: webx-gateway-data
+        driver: local
+
+    - name: Run NGINX container
+      docker_container:
+        name: webx-gateway
+        image: nginx:1.25.5
+        state: started
+        ports:
+          - "80:80"
+        volumes:
+          - "webx-gateway-data:/usr/share/nginx/html:ro"
