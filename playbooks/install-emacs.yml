@@ -1,0 +1,13 @@
+---
+- name: Install emacs
+  hosts: all
+
+  tasks:
+    - name: Update apt packages
+      apt:
+        update_cache: yes
+
+    - name: Install emacs
+      apt:
+        name: emacs-nox
+        state: present
