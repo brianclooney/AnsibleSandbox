@@ -1,0 +1,20 @@
+---
+
+- name: Pull Adminer docker image
+  docker_image:
+    name: adminer:4.8.1-standalone
+    source: pull
+
+- name: Run Adminer container
+  docker_container:
+    name: web-adminer
+    image: adminer:4.8.1-standalone
+    state: started
+    networks:
+      - name: "{{ network_name }}"
+    expose:
+      - "8080"
+    env:
+      ADMINER_DESIGN: flat
+
+
