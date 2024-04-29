@@ -1,0 +1,4 @@
+---
+network_name: web-app-network
+gateway_data_volume: web-gateway-data
+nginx_version: 1.25.5
