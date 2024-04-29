@@ -1,0 +1,6 @@
+---
+
+- name: Install Emacs
+  hosts: all
+  roles:
+    - emacs
