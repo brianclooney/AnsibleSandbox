@@ -1,0 +1,6 @@
+---
+- hosts: all
+  roles:
+    - hello-world
+  vars:
+    - doc_contents: "This is the HELLO WORLD test #2"

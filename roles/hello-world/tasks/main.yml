@@ -1,0 +1,14 @@
+---
+
+- name: Print debug message
+  debug:
+    msg: "Hello, World!"
+
+- name: Print value of TEST_VAR11
+  debug:
+    msg: "{{TEST_VAR11}}"
+
+- name: Create file in user's home folder
+  template:
+    src: hello_world.txt.j2
+    dest: ~/hello_world.txt
