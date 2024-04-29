@@ -1,0 +1,57 @@
+---
+
+#  Create Database container
+
+- name: Pull MariaDB docker image
+  docker_image:
+    name: mariadb:11.3.2-jammy
+    source: pull
+
+- name: Create volume for database
+  docker_volume:
+    name: "{{ fileservice_db_volume }}"
+    driver: local
+
+- name: Run MariaDB container
+  docker_container:
+    name: web-fileservice-db
+    image: mariadb:11.3.2-jammy
+    state: started
+    networks:
+      - name: "{{ network_name }}"
+    volumes:
+      - "{{ fileservice_db_volume }}:/var/lib/mysql"
+      - /etc/timezone:/etc/timezone:ro 
+      - /etc/localtime:/etc/localtime:ro
+    env:
+      MYSQL_ROOT_PASSWORD: "{{ fileservice_db_root_password }}"
+      MYSQL_USER: "{{ fileservice_db_user }}"
+      MYSQL_PASSWORD: "{{ fileservice_db_password }}"
+      MYSQL_DATABASE: "{{ fileservice_db_database }}"
+
+#  Create API container
+    
+- name: Pull RestFileService docker image
+  docker_image:
+    name: ghcr.io/brianclooney/restfileservice:v0.0.6
+    source: pull
+
+- name: Create volume for API
+  docker_volume:
+    name: "{{ fileservice_api_volume }}"
+    driver: local
+
+- name: Run RestFileService container
+  docker_container:
+    name: web-fileservice-api
+    image: ghcr.io/brianclooney/restfileservice:v0.0.6
+    state: started
+    expose:
+      - 8080
+    networks:
+      - name: "{{ network_name }}"
+    volumes:
+      - "{{ fileservice_api_volume }}:/app/uploads"
+    env:
+      ASPNETCORE_ENVIRONMENT: Development
+      ConnectionStrings__Database: "server=web-fileservice-db;port=3306;user={{ fileservice_db_user }};password={{ fileservice_db_password }};database={{ fileservice_db_database }}"
