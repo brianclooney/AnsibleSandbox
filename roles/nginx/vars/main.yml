@@ -1,3 +1,3 @@
 ---
-gateway_data_volume: web-gateway-data
 nginx_version: 1.25.5
+my_domain_name: example.com

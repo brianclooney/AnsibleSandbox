@@ -5,16 +5,45 @@
     name: nginx:{{nginx_version}}
     source: pull
 
-- name: Create docker volume ({{ gateway_data_volume }})
-  docker_volume:
-    name: "{{ gateway_data_volume }}"
-    driver: local
+# TODO: This should probably be moved to a different role
+# - name: Create docker network ({{ network_name }})
+#   docker_network:
+#     name: "{{ network_name }}"
+#     driver: bridge
 
-- name: Create docker network ({{ network_name }})
-  docker_network:
-    name: "{{ network_name }}"
-    driver: bridge
-    
+# Copy files to NGINX volumes
+
+- name: Ensure NGINX directories exist
+  ansible.builtin.file:
+    path: "{{ item }}"
+    state: directory
+    owner: root
+    group: root
+    mode: '0755'
+  loop:
+    - /var/www
+    - /var/nginx/conf.d
+
+- name: Copy files to the server
+  copy:
+    src: "{{ item.src }}" 
+    dest: "{{ item.dest }}"
+    owner: root
+    group: root
+    mode: '0644'
+  loop:
+    - src: test.html
+      dest: /var/www/test.html
+    - src: default.conf
+      dest: /var/nginx/conf.d/default.conf
+
+- name: Create conf file for server
+  template:
+    src: server.conf.j2
+    dest: /var/nginx/conf.d/server.conf
+
+# Create/Start the container
+  
 - name: Run NGINX container
   docker_container:
     name: web-gateway
@@ -25,47 +54,5 @@
     ports:
       - "80:80"
     volumes:      
-      - "{{ gateway_data_volume }}:/usr/share/nginx/html:ro"
-
-# Copy file to NGINX volume
-
-- name: Pull the latest Alpine image
-  docker_image:
-    name: alpine:3.19.1
-    source: pull
-
-- name: Create a temporary container with RW access to the Docker volume
-  docker_container:
-    name: temp-file-manager
-    image: alpine:3.19.1
-    command: sleep 3600
-    volumes:
-      - "{{ gateway_data_volume }}:/data:rw"
-    state: started
-    
-- name: Create a temporary file
-  tempfile:
-    state: file
-    suffix: .html
-  register: temp_file
-
-- name: Copy local file to the temporary path
-  copy:
-    src: test.html
-    dest: "{{ temp_file.path }}"
-    owner: root
-    group: root
-    mode: '0644'
-    
-- name: Copy temporary file to Docker container
-  command: docker cp "{{ temp_file.path }}" temp-file-manager:/data/test.html
-
-- name: Remove temporary file
-  file:
-    path: "{{ temp_file.path }}"
-    state: absent
-    
-- name: Remove the temporary container
-  docker_container:
-    name: temp-file-manager
-    state: absent
+      - "/var/www:/usr/share/nginx/html:ro"
+      - "/var/nginx/conf.d:/etc/nginx/conf.d:ro"
