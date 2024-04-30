@@ -5,12 +5,6 @@
     name: nginx:{{nginx_version}}
     source: pull
 
-# TODO: This should probably be moved to a different role
-# - name: Create docker network ({{ network_name }})
-#   docker_network:
-#     name: "{{ network_name }}"
-#     driver: bridge
-
 # Copy files to NGINX volumes
 
 - name: Ensure NGINX directories exist

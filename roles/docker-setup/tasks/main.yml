@@ -19,3 +19,11 @@
     name: docker
     state: started
     enabled: true
+
+# Create required docker networks
+  
+- name: Create docker network ({{ network_name }})
+  docker_network:
+    name: "{{ network_name }}"
+    driver: bridge
+    

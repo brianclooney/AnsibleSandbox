@@ -3,6 +3,7 @@
 - name: Deploy Web App
   hosts: all
   roles:
+    - docker-setup
     - test-file-server
     - adminer
     - nginx
