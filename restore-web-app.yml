@@ -1,0 +1,11 @@
+---
+
+- name: Restore Web App Data
+  hosts: all
+  tasks:
+    - import_tasks: roles/test-file-server/tasks/restore.yml
+  vars_files:
+    - roles/test-file-server/defaults/main.yml
+  vars:
+    - network_name: web-app-network
+    - restore_prefix: "backup-2024-04-01-"

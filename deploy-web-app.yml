@@ -1,7 +1,10 @@
 ---
+
 - name: Deploy Web App
   hosts: all
   roles:
     - test-file-server
     - adminer
     - nginx
+  vars:
+    - network_name: web-app-network

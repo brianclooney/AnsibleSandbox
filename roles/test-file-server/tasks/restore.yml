@@ -1,0 +1,5 @@
+---
+
+- name: Placeholder for restoring data
+  debug:
+    msg: "TODO: Restore database {{ fileservice_db_database }} to [{{ restore_prefix }}test-file-server.zip] ..."

@@ -1,0 +1,12 @@
+---
+
+- name: Backup Web App Data
+  hosts: all
+  tasks:
+    - import_tasks: roles/test-file-server/tasks/backup.yml
+  vars_files:
+    - roles/test-file-server/defaults/main.yml
+  vars:
+    - network_name: web-app-network
+    - backup_prefix: "backup-{{ now(fmt='%Y-%m-%d') }}-"
+

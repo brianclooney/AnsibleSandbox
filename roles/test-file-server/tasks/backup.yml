@@ -1,0 +1,5 @@
+---
+
+- name: Placeholder for backups
+  debug:
+    msg: "TODO: Backup data [{{ backup_prefix }}test-file-server.zip] ..."

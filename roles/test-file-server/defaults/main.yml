@@ -1,5 +1,4 @@
 ---
-network_name: web-app-network
 fileservice_db_root_password: password
 fileservice_db_user: appuser
 fileservice_db_password: password
