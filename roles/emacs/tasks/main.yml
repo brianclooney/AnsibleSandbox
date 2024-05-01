@@ -8,3 +8,27 @@
   apt:
     name: emacs-nox
     state: present
+
+- name: Ensure EMACS directories exist
+  ansible.builtin.file:
+    path: "{{ item }}"
+    state: directory
+    owner: root
+    group: root
+    mode: '0770'
+  loop:
+    - ~/.emacs.d/backups
+    - ~/.emacs.d/themes
+
+- name: Copy files to the server
+  copy:
+    src: "{{ item.src }}" 
+    dest: "{{ item.dest }}"
+    owner: root
+    group: root
+    mode: '0664'
+  loop:
+    - src: .emacs
+      dest: ~/.emacs
+    - src: zenburn-theme.el
+      dest: ~/.emacs.d/themes/zenburn-theme.el
