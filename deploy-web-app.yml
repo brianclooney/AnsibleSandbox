@@ -4,6 +4,7 @@
   hosts: all
   roles:
     - docker-setup
+    - node-exporter
     - test-file-server
     - adminer
     - nginx

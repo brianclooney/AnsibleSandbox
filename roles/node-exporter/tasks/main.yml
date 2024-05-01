@@ -1,0 +1,23 @@
+---
+
+- name: Pull the node_exporter Docker image
+  docker_image:
+    name: prom/node-exporter:v1.8.0
+    source: pull
+
+- name: Run node_exporter container
+  docker_container:
+    name: web-node-exporter
+    image: prom/node-exporter:v1.8.0
+    state: started
+    command:
+      - '--path.rootfs=/host'
+      - '--collector.filesystem.mount-points-exclude=^/(sys|proc|dev|etc|boot|var|tmp)($$|/)'
+    networks:
+      - name: "{{ network_name }}"
+    volumes:
+      - "/:/host:ro,rslave"
+      - /etc/timezone:/etc/timezone:ro 
+      - /etc/localtime:/etc/localtime:ro
+    expose:
+      - "9100"
