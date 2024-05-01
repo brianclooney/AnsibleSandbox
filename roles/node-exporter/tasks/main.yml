@@ -7,7 +7,7 @@
 
 - name: Run node_exporter container
   docker_container:
-    name: web-node-exporter
+    name: "{{ container_name }}"
     image: prom/node-exporter:v1.8.0
     state: started
     command:
@@ -21,3 +21,15 @@
       - /etc/localtime:/etc/localtime:ro
     expose:
       - "9100"
+
+# Copy NGINX location file to server
+
+- name: Make sure directory exists
+  ansible.builtin.file:
+    path: /var/nginx/locations
+    state: directory
+    
+- name: Copy conf file for server
+  template:
+    src: nginx-location.conf.j2
+    dest: "/var/nginx/locations/{{ container_name }}.conf"

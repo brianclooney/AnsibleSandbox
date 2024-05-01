@@ -1,4 +1,5 @@
 ---
+container_base_name: web-fileservice-
 fileservice_db_root_password: password
 fileservice_db_user: appuser
 fileservice_db_password: password

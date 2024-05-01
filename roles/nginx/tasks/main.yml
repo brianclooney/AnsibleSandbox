@@ -17,6 +17,7 @@
   loop:
     - /var/www
     - /var/nginx/conf.d
+    - /var/nginx/locations
 
 - name: Copy files to the server
   copy:
@@ -50,3 +51,4 @@
     volumes:      
       - "/var/www:/usr/share/nginx/html:ro"
       - "/var/nginx/conf.d:/etc/nginx/conf.d:ro"
+      - "/var/nginx/locations:/etc/nginx/locations:ro"

@@ -7,7 +7,7 @@
 
 - name: Run Adminer container
   docker_container:
-    name: web-adminer
+    name: "{{ container_name }}"
     image: adminer:4.8.1-standalone
     state: started
     networks:
@@ -17,4 +17,14 @@
     env:
       ADMINER_DESIGN: flat
 
+# Copy NGINX location file to server
 
+- name: Make sure directory exists
+  ansible.builtin.file:
+    path: /var/nginx/locations
+    state: directory
+    
+- name: Copy conf file for server
+  template:
+    src: nginx-location.conf.j2
+    dest: "/var/nginx/locations/{{ container_name }}.conf"

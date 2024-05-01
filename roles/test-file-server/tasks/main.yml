@@ -14,7 +14,7 @@
 
 - name: Run MariaDB container
   docker_container:
-    name: web-fileservice-db
+    name: "{{ container_base_name }}db"
     image: mariadb:11.3.2-jammy
     state: started
     networks:
@@ -43,7 +43,7 @@
 
 - name: Run RestFileService container
   docker_container:
-    name: web-fileservice-api
+    name: "{{ container_base_name }}api"
     image: ghcr.io/brianclooney/restfileservice:v0.0.6
     state: started
     expose:
@@ -54,4 +54,16 @@
       - "{{ fileservice_api_volume }}:/app/uploads"
     env:
       ASPNETCORE_ENVIRONMENT: Development
-      ConnectionStrings__Database: "server=web-fileservice-db;port=3306;user={{ fileservice_db_user }};password={{ fileservice_db_password }};database={{ fileservice_db_database }}"
+      ConnectionStrings__Database: "server={{ container_base_name }}db;port=3306;user={{ fileservice_db_user }};password={{ fileservice_db_password }};database={{ fileservice_db_database }}"
+
+# Copy NGINX location file to server
+
+- name: Make sure directory exists
+  ansible.builtin.file:
+    path: /var/nginx/locations
+    state: directory
+    
+- name: Create conf file for server
+  template:
+    src: nginx-location.conf.j2
+    dest: "/var/nginx/locations/{{ container_base_name }}api.conf"
