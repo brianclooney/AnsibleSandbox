@@ -2,6 +2,10 @@
 
 - hosts: all
   roles:
+    - nginx
     - certbot
+  tasks:
+    - name: Flush handlers
+      meta: flush_handlers
   vars:
     - network_name: web-app-network

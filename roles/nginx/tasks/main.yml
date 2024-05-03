@@ -33,11 +33,15 @@
       dest: /var/www/robots.txt
     - src: default.conf
       dest: /var/nginx/conf.d/default.conf
+  notify:
+    - Restart NGINX
 
 - name: Create SSL conf file for server
   template:
     src: ssl.conf.j2
     dest: "/var/nginx/{{ my_domain_name|replace('.','-') }}/ssl.conf"
+  notify:
+    - Restart NGINX
 
 - name: Create conf file for server
   template:

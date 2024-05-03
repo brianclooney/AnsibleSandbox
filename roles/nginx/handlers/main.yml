@@ -3,6 +3,5 @@
 - name: Restart NGINX
   docker_container:
     name: web-gateway
-    state: restarted
+    state: started
     restart: yes
-

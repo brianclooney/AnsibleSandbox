@@ -24,7 +24,9 @@
     detach: no
     tty: true
   register: certbot_output
+  notify:
+    - Restart NGINX
 
 - name: Print Certbot output
   debug:
-    var: certbot_output.stdout_lines
+    var: certbot_output

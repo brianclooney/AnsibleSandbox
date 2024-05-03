@@ -8,5 +8,8 @@
     - test-file-server
     - adminer
     - nginx
+  tasks:
+    - name: Flush handlers
+      meta: flush_handlers
   vars:
     - network_name: web-app-network
