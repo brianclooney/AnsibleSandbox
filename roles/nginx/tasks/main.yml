@@ -17,7 +17,7 @@
   loop:
     - /var/www
     - /var/nginx/conf.d
-    - /var/nginx/locations
+    - "/var/nginx/{{ my_domain_name|replace('.','-') }}/locations"
 
 - name: Copy files to the server
   copy:
@@ -29,8 +29,15 @@
   loop:
     - src: test.html
       dest: /var/www/test.html
+    - src: robots.txt
+      dest: /var/www/robots.txt
     - src: default.conf
       dest: /var/nginx/conf.d/default.conf
+
+- name: Create SSL conf file for server
+  template:
+    src: ssl.conf.j2
+    dest: "/var/nginx/{{ my_domain_name|replace('.','-') }}/ssl.conf"
 
 - name: Create conf file for server
   template:
@@ -48,7 +55,9 @@
       - name: "{{ network_name }}"
     ports:
       - "80:80"
+      - "443:443"
     volumes:      
+      - "/etc/letsencrypt:/etc/letsencrypt:ro"
       - "/var/www:/usr/share/nginx/html:ro"
       - "/var/nginx/conf.d:/etc/nginx/conf.d:ro"
-      - "/var/nginx/locations:/etc/nginx/locations:ro"
+      - "/var/nginx/{{ my_domain_name|replace('.','-') }}:/etc/nginx/{{ my_domain_name|replace('.','-') }}:ro"

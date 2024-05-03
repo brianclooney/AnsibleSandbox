@@ -26,10 +26,10 @@
 
 - name: Make sure directory exists
   ansible.builtin.file:
-    path: /var/nginx/locations
+    path: "/var/nginx/{{ my_domain_name|replace('.','-') }}/locations"
     state: directory
     
 - name: Copy conf file for server
   template:
     src: nginx-location.conf.j2
-    dest: "/var/nginx/locations/{{ container_name }}.conf"
+    dest: "/var/nginx/{{ my_domain_name|replace('.','-') }}/locations/{{ container_name }}.conf"

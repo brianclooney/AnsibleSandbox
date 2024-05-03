@@ -1,0 +1,7 @@
+---
+
+- hosts: all
+  roles:
+    - certbot
+  vars:
+    - network_name: web-app-network

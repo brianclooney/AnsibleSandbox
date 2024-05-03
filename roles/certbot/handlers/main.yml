@@ -1,0 +1,8 @@
+---
+
+- name: Restart NGINX
+  docker_container:
+    name: web-gateway
+    state: restarted
+    restart: yes
+

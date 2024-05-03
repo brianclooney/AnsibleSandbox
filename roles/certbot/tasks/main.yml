@@ -1,0 +1,30 @@
+---
+
+- name: Create webroot if it doesn't exist
+  file:
+    path: "{{ webroot_path }}/.well-known/acme-challenge"
+    state: directory
+    owner: www-data
+    group: www-data
+    mode: '0755'
+    recurse: true
+        
+- name: Generate or renew Let's Encrypt SSL certificates
+  docker_container:
+    name: certbot
+    image: certbot/certbot
+    command: certonly --webroot --webroot-path=/data/letsencrypt -d {{ my_domain_name }} --email {{ certbot_email }} --agree-tos --no-eff-email --keep-until-expiring
+    volumes:
+      - "/etc/letsencrypt:/etc/letsencrypt"
+      - "/var/lib/letsencrypt:/var/lib/letsencrypt"
+      - "/var/log/letsencrypt:/var/log/letsencrypt"
+      - "{{ webroot_path }}:/data/letsencrypt"
+    state: started
+    restart_policy: "no"
+    detach: no
+    tty: true
+  register: certbot_output
+
+- name: Print Certbot output
+  debug:
+    var: certbot_output.stdout_lines

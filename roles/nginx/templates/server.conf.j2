@@ -2,12 +2,31 @@ server {
 
     listen 80;
     server_name {{ my_domain_name }};
-
-    # TEST: {{ my_domain_name|replace(".","-") }}
-    
-    # Include SSL configurations
-    # include /etc/nginx/snippets/ssl-server.conf;
     
     # Dynamic location configurations
-    include /etc/nginx/locations/*.conf;
+    # include /etc/nginx/{{ my_domain_name|replace(".","-") }}/locations/*.conf;
+
+    location /.well-known/acme-challenge/ {
+	root /usr/share/nginx/html;
+    }
+
+    location = /robots.txt {
+        root /usr/share/nginx/html;
+    }
+    
+    location / {
+	return 301 https://$host$request_uri;
+    }
+}
+
+server {
+
+    listen 443 ssl;
+    server_name {{ my_domain_name }};
+
+    # Include SSL configurations
+    include /etc/nginx/{{ my_domain_name|replace(".","-") }}/ssl*.conf;
+    
+    # Dynamic location configurations
+    include /etc/nginx/{{ my_domain_name|replace(".","-") }}/locations/*.conf;
 }
