@@ -1,10 +1,10 @@
 server {
 
     listen 80;
-    server_name {{ my_domain_name }};
+    server_name {{ app_domains|join(" ") }};
     
     # Dynamic location configurations
-    # include /etc/nginx/{{ my_domain_name|replace(".","-") }}/locations/*.conf;
+    # include /etc/nginx/{{ app_name }}/locations/*.conf;
 
     location /.well-known/acme-challenge/ {
 	root /usr/share/nginx/html;
@@ -22,11 +22,11 @@ server {
 server {
 
     listen 443 ssl;
-    server_name {{ my_domain_name }};
+    server_name {{ app_domains|join(" ") }};
 
     # Include SSL configurations
-    include /etc/nginx/{{ my_domain_name|replace(".","-") }}/ssl*.conf;
+    include /etc/nginx/{{ app_name }}/ssl*.conf;
     
     # Dynamic location configurations
-    include /etc/nginx/{{ my_domain_name|replace(".","-") }}/locations/*.conf;
+    include /etc/nginx/{{ app_name }}/locations/*.conf;
 }

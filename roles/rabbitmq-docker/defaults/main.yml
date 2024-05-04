@@ -1,0 +1,7 @@
+---
+
+app_name: "undefined"
+network_name: "default-rabbitmq-network"
+admin:
+  username: "guest"
+  password: "guest"

@@ -60,12 +60,12 @@
 
 - name: Make sure directory exists
   ansible.builtin.file:
-    path: "/var/nginx/{{ my_domain_name|replace('.','-') }}/locations"
+    path: "/var/nginx/{{ app_name }}/locations"
     state: directory
     
 - name: Create conf file for server
   template:
     src: nginx-location.conf.j2
-    dest: "/var/nginx/{{ my_domain_name|replace('.','-') }}/locations/{{ container_base_name }}api.conf"
+    dest: "/var/nginx/{{ app_name }}/locations/{{ container_base_name }}api.conf"
   notify:
     - Restart NGINX
