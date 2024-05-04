@@ -4,9 +4,25 @@
   debug:
     msg: "Hello, World!"
 
-- name: Print value of TEST_VAR11
+- name: Print value of app_name
   debug:
-    msg: "{{TEST_VAR11}}"
+    msg: "{{ app_name }}"
+
+- name: Print value of app_domains
+  debug:
+    msg: "{{ app_domains|join(', ') }}"
+
+- name: Print value of my_service.db_user
+  debug:
+    msg: "{{ my_service.db_user }}"
+
+- name: Print value of my_service.db_user
+  debug:
+    msg: "{{ my_defaults.test_var1 }}"
+
+- name: Print value of app_domains
+  debug:
+    msg: "{{ my_defaults.test_arr1|join('-') }}"
 
 - name: Create file in user's home folder
   template:

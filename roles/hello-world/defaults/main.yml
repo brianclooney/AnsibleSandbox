@@ -1,0 +1,12 @@
+---
+
+my_service:
+  db_user: "default_user"
+  
+my_defaults:
+   test_var1: "This is test var #1"
+   test_arr1:
+     - "read"
+     - "write"
+     - "admin"
+
