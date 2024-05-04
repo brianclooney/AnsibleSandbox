@@ -5,6 +5,7 @@
   roles:
     - docker-setup
     - node-exporter
+    - cadvisor
     - test-file-server
     - adminer
     - nginx

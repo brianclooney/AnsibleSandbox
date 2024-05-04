@@ -1,0 +1,35 @@
+---
+
+- name: Run docker cAdvisor container
+  docker_container:
+    name: "{{ container_name }}"
+    image: gcr.io/cadvisor/cadvisor:v0.49.1
+    pull: yes
+    state: started
+    restart_policy: unless-stopped
+    expose:
+      - 8080
+    command:
+      - '--url_base_prefix={{ url_base_prefix }}'
+    volumes:
+      - "/:/rootfs:ro"
+      - "/var/run:/var/run:ro"
+      - "/sys:/sys:ro"
+      - "/var/lib/docker/:/var/lib/docker:ro"
+      - "/dev/disk/:/dev/disk:ro"
+    networks:
+      - name: "{{ network_name }}"
+
+# Copy NGINX location file to server
+
+- name: Make sure directory exists
+  ansible.builtin.file:
+    path: "/var/nginx/{{ my_domain_name|replace('.','-') }}/locations"
+    state: directory
+    
+- name: Copy conf file for server
+  template:
+    src: nginx-location.conf.j2
+    dest: "/var/nginx/{{ my_domain_name|replace('.','-') }}/locations/{{ container_name }}.conf"
+  notify:
+    - Restart NGINX

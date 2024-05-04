@@ -1,0 +1,4 @@
+---
+container_name: web-cadvisor
+url_base_prefix: /admin/cadvisor
+
