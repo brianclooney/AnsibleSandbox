@@ -16,9 +16,11 @@
     command:
       - "--loop"
       - "--number=1"
-      - "--delay=1000ms"
+      - "--delay=2m"
       - "--output=/var/log/generated.log"
       - "--overwrite"
       - "--type=log"
     volumes:
       - "{{ log_directory }}:/var/log"
+      - /etc/timezone:/etc/timezone:ro 
+      - /etc/localtime:/etc/localtime:ro
