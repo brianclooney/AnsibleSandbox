@@ -1,9 +1,5 @@
 ---
 
-# - name: Set container name
-#   vars:
-#     container_name: "{{ app_name }}-rabbitmq"
-    
 - name: Run docker RabbitMQ container
   docker_container:
     name: "{{ app_name }}-rabbitmq"
@@ -21,16 +17,25 @@
     networks:
       - name: "{{ network_name }}"
 
+- name: Create log queue and set TTL policy
+  community.docker.docker_container_exec:
+    container: "{{ app_name }}-rabbitmq"
+    command: rabbitmqadmin -u "{{ admin.username }}" -p "{{ admin.password }}" declare queue name=log-queue durable=true arguments='{"x-message-ttl":3600000}'
+        
 # Copy NGINX location file to server
+
+- name: Set the config directory path
+  set_fact:
+    config_directory: "/etc/{{ nginx_container }}/servers/{{ app_name }}/locations"
 
 - name: Make sure directory exists
   ansible.builtin.file:
-    path: "/var/nginx/{{ app_name }}/locations"
+    path: "{{ config_directory }}"
     state: directory
     
 - name: Copy conf file for server
   template:
     src: nginx-location.conf.j2
-    dest: "/var/nginx/{{ app_name }}/locations/{{ app_name }}-rabbitmq.conf"
+    dest: "{{ config_directory }}/{{ app_name }}-rabbitmq.conf"
   notify:
     - Restart NGINX

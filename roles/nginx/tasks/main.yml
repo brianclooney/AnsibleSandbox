@@ -15,9 +15,9 @@
     group: root
     mode: '0755'
   loop:
-    - /var/www
-    - /var/nginx/conf.d
-    - "/var/nginx/{{ app_name }}/locations"
+    - "/var/lib/web-gateway/{{ app_name }}"
+    - "/etc/web-gateway/conf.d"
+    - "/etc/web-gateway/servers/{{ app_name }}/locations"
 
 - name: Copy files to the server
   copy:
@@ -28,25 +28,25 @@
     mode: '0644'
   loop:
     - src: test.html
-      dest: /var/www/test.html
+      dest: "/var/lib/web-gateway/{{ app_name }}/test.html"
     - src: robots.txt
-      dest: /var/www/robots.txt
+      dest: "/var/lib/web-gateway/{{ app_name }}/robots.txt"
     - src: default.conf
-      dest: /var/nginx/conf.d/default.conf
+      dest: "/etc/web-gateway/conf.d/default.conf"
   notify:
     - Restart NGINX
 
 - name: Create SSL conf file for server
   template:
     src: ssl.conf.j2
-    dest: "/var/nginx/{{ app_name }}/ssl.conf"
+    dest: "/etc/web-gateway/servers/{{ app_name }}/ssl.conf"
   notify:
     - Restart NGINX
 
 - name: Create conf file for server
   template:
     src: server.conf.j2
-    dest: /var/nginx/conf.d/server.conf
+    dest: "/etc/web-gateway/conf.d/{{ app_name }}.conf"
 
 # Create/Start the container
   
@@ -62,6 +62,6 @@
       - "443:443"
     volumes:      
       - "/etc/letsencrypt:/etc/letsencrypt:ro"
-      - "/var/www:/usr/share/nginx/html:ro"
-      - "/var/nginx/conf.d:/etc/nginx/conf.d:ro"
-      - "/var/nginx/{{ app_name }}:/etc/nginx/{{ app_name }}:ro"
+      - "/var/lib/web-gateway:/usr/share/nginx/html:ro"
+      - "/etc/web-gateway/conf.d:/etc/nginx/conf.d:ro"
+      - "/etc/web-gateway/servers:/etc/nginx/servers:ro"

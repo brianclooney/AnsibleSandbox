@@ -3,19 +3,16 @@ server {
     listen 80;
     server_name {{ app_domains|join(" ") }};
     
-    # Dynamic location configurations
-    # include /etc/nginx/{{ app_name }}/locations/*.conf;
-
     location /.well-known/acme-challenge/ {
-	root /usr/share/nginx/html;
+        root /usr/share/nginx/html;
     }
 
     location = /robots.txt {
-        root /usr/share/nginx/html;
+        root /usr/share/nginx/html/{{ app_name }};
     }
     
     location / {
-	return 301 https://$host$request_uri;
+        return 301 https://$host$request_uri;
     }
 }
 
@@ -25,8 +22,12 @@ server {
     server_name {{ app_domains|join(" ") }};
 
     # Include SSL configurations
-    include /etc/nginx/{{ app_name }}/ssl*.conf;
+    include /etc/nginx/servers/{{ app_name }}/ssl*.conf;
     
     # Dynamic location configurations
-    include /etc/nginx/{{ app_name }}/locations/*.conf;
+    include /etc/nginx/servers/{{ app_name }}/locations/*.conf;
+
+    location / {
+        root /usr/share/nginx/html/{{ app_name }};
+    }
 }

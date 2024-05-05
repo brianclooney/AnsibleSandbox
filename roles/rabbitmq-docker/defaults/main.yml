@@ -1,5 +1,7 @@
 ---
 
+nginx_container: web-gateway
+
 app_name: "undefined"
 network_name: "default-rabbitmq-network"
 admin:

@@ -6,3 +6,4 @@ fileservice_db_password: password
 fileservice_db_database: files_db
 fileservice_db_volume: volume-fileservice-db
 fileservice_api_volume: volume-fileservice-api
+nginx_container: web-gateway

@@ -24,14 +24,18 @@
 
 # Copy NGINX location file to server
 
+- name: Set the config directory path
+  set_fact:
+    config_directory: "/etc/{{ nginx_container }}/servers/{{ app_name }}/locations"
+
 - name: Make sure directory exists
   ansible.builtin.file:
-    path: "/var/nginx/{{ app_name }}/locations"
+    path: "{{ config_directory }}"
     state: directory
     
 - name: Copy conf file for server
   template:
     src: nginx-location.conf.j2
-    dest: "/var/nginx/{{ app_name }}/locations/{{ container_name }}.conf"
+    dest: "{{ config_directory }}/{{ container_name }}.conf"
   notify:
     - Restart NGINX

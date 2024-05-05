@@ -1,3 +1,5 @@
 ---
 container_name: web-node-exporter
 url_base_prefix: /admin
+nginx_container: web-gateway
+
