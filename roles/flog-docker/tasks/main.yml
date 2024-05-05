@@ -1,0 +1,24 @@
+---
+
+- name: Set the log directory path
+  set_fact:
+    log_directory: "/var/log/{{ container_name }}"
+    
+- name: Ensure the log directory exists
+  ansible.builtin.file:
+    path: "{{ log_directory }}"
+    state: directory
+
+- name: Create fake log generator docker container
+  docker_container:
+    name: "{{ container_name }}"
+    image: mingrammer/flog:0.4.3
+    command:
+      - "--loop"
+      - "--number=1"
+      - "--delay=1000ms"
+      - "--output=/var/log/generated.log"
+      - "--overwrite"
+      - "--type=log"
+    volumes:
+      - "{{ log_directory }}:/var/log"
