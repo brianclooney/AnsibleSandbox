@@ -2,7 +2,10 @@ server {
 
     listen 80;
     server_name {{ app_domains|join(" ") }};
-    
+
+    access_log /var/log/nginx/{{ app_name }}.access.log;
+    error_log /var/log/nginx/{{ app_name }}.error.log;
+
     location /.well-known/acme-challenge/ {
         root /usr/share/nginx/html;
     }
@@ -20,6 +23,9 @@ server {
 
     listen 443 ssl;
     server_name {{ app_domains|join(" ") }};
+
+    access_log /var/log/nginx/{{ app_name }}.access.log;
+    error_log /var/log/nginx/{{ app_name }}.error.log;
 
     # Include SSL configurations
     include /etc/nginx/servers/{{ app_name }}/ssl*.conf;

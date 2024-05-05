@@ -15,9 +15,10 @@
     group: root
     mode: '0755'
   loop:
-    - "/var/lib/web-gateway/{{ app_name }}"
-    - "/etc/web-gateway/conf.d"
-    - "/etc/web-gateway/servers/{{ app_name }}/locations"
+    - "/var/lib/{{ container_name }}/{{ app_name }}"
+    - "/var/log/{{ container_name }}"
+    - "/etc/{{ container_name }}/conf.d"
+    - "/etc/{{ container_name }}/servers/{{ app_name }}/locations"
 
 - name: Copy files to the server
   copy:
@@ -28,31 +29,36 @@
     mode: '0644'
   loop:
     - src: test.html
-      dest: "/var/lib/web-gateway/{{ app_name }}/test.html"
+      dest: "/var/lib/{{ container_name }}/{{ app_name }}/test.html"
     - src: robots.txt
-      dest: "/var/lib/web-gateway/{{ app_name }}/robots.txt"
+      dest: "/var/lib/{{ container_name }}/{{ app_name }}/robots.txt"
     - src: default.conf
-      dest: "/etc/web-gateway/conf.d/default.conf"
+      dest: "/etc/{{ container_name }}/conf.d/default.conf"
   notify:
     - Restart NGINX
 
 - name: Create SSL conf file for server
   template:
     src: ssl.conf.j2
-    dest: "/etc/web-gateway/servers/{{ app_name }}/ssl.conf"
+    dest: "/etc/{{ container_name }}/servers/{{ app_name }}/ssl.conf"
   notify:
     - Restart NGINX
 
 - name: Create conf file for server
   template:
     src: server.conf.j2
-    dest: "/etc/web-gateway/conf.d/{{ app_name }}.conf"
+    dest: "/etc/{{ container_name }}/conf.d/{{ app_name }}.conf"
 
+- name: Copy logrotate conf file for server
+  template:
+    src: logrotate.conf.j2
+    dest: "/etc/logrotate.d/{{ container_name }}"
+    
 # Create/Start the container
   
 - name: Run NGINX container
   docker_container:
-    name: web-gateway
+    name: "{{ container_name }}"
     image: nginx:{{nginx_version}}
     state: started
     networks:
@@ -62,6 +68,7 @@
       - "443:443"
     volumes:      
       - "/etc/letsencrypt:/etc/letsencrypt:ro"
-      - "/var/lib/web-gateway:/usr/share/nginx/html:ro"
-      - "/etc/web-gateway/conf.d:/etc/nginx/conf.d:ro"
-      - "/etc/web-gateway/servers:/etc/nginx/servers:ro"
+      - "/var/lib/{{ container_name }}:/usr/share/nginx/html:ro"
+      - "/var/log/{{ container_name }}:/var/log/nginx:rw"
+      - "/etc/{{ container_name }}/conf.d:/etc/nginx/conf.d:ro"
+      - "/etc/{{ container_name }}/servers:/etc/nginx/servers:ro"

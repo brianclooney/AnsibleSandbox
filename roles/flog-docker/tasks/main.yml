@@ -9,6 +9,11 @@
     path: "{{ log_directory }}"
     state: directory
 
+- name: Copy logrotate conf file for server
+  template:
+    src: logrotate.conf.j2
+    dest: "/etc/logrotate.d/{{ container_name }}"
+
 - name: Create fake log generator docker container
   docker_container:
     name: "{{ container_name }}"

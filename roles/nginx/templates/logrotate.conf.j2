@@ -1,0 +1,8 @@
+/var/log/{{ container_name }}/*.log {
+       daily
+       rotate 7
+       delaycompress
+       compress
+       notifempty
+       missingok
+}
