@@ -1,0 +1,59 @@
+{
+  "config": {
+    "app_name": "test",
+    "app_domains": [
+      "dev.my_domain.net",
+      "sandbox.my_domain.net"
+    ],
+    "common": {
+      "jwt_secret": "{{JWT_SECRET}}",
+      "jwt_issuer": "MyIssuer",
+      "jwt_audience": "MyAudience"
+    },
+    "roles": {
+      "my_service": {
+        "domain": "dev.my_domain.net",
+        "db_root_password": "{{DB_ROOT_PASSWORD}}",
+        "db_user": "user01",
+        "db_password": "{{DB_PASSWORD}}",
+        "db_database": "my_service_db"
+      },
+      "rabbitmq": {
+        "domain": "dev.my_domain.net",
+        "container": "test-rabbitmq",
+        "admin_username": "guest",
+        "admin_password": "{{RABBITMQ_PASSWORD}}"
+      },
+      "flog-docker": {
+        "container": "test-log-generator",
+        "log_file": "/var/log/test-log-generator/generated.log"
+      },
+      "nginx": {
+        "container": "test-gateway",
+        "log_dir": "/var/log/test-gateway"
+      },
+      "logstash": {
+        "domain": "sandbox.my_domain.net",
+        "container": "test-logstash",
+        "inputs": [
+          {
+            "type": "file",
+            "path": "/var/log/test-log-generator/generated.log"
+          },
+          {
+            "type": "file",
+            "path": "/var/log/test-gateway/*.log"
+          }
+        ],
+        "outputs": [
+          {
+            "type": "rabbitmq",
+            "host": "test-rabbit:5672",
+            "queue": "log-queue",
+            "exchange": "log-exchange"
+          }
+        ]
+      }
+    }
+  }
+}
