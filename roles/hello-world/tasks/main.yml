@@ -1,4 +1,8 @@
 ---
+          
+- name: System details
+  debug:
+    msg: "{{ ansible_distribution }} {{ ansible_distribution_version }} ({{ ansible_architecture }})"
 
 - name: Print debug message
   debug:
@@ -6,7 +10,7 @@
 
 - name: Print value of app_name
   debug:
-    msg: "{{ app_name }}"
+    var: app_name
 
 - name: Print value of app_domains
   debug:
@@ -14,7 +18,7 @@
 
 - name: Print value of my_service.db_user
   debug:
-    msg: "{{ my_service.db_user }}"
+    var: my_service.db_user
 
 - name: Print value of my_service.db_user
   debug:
