@@ -1,12 +1,13 @@
 ---
 
-my_service:
-  db_user: "default_user"
-  
-my_defaults:
-   test_var1: "This is test var #1"
-   test_arr1:
-     - "read"
-     - "write"
-     - "admin"
-
+app_name: "default_app_name"
+app_domains:
+  - example.com
+  - www.example.com
+hello_world:
+   doc_contents: "This is the default content of the HELLO WORLD file."
+   test_var: "This is test var #1"
+   test_arr:
+     - read
+     - write
+     - admin

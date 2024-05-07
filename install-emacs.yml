@@ -1,6 +1,6 @@
 ---
 
-- name: Install Emacs
-  hosts: all
+- hosts: all
+  gather_facts: yes
   roles:
     - emacs

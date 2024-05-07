@@ -3,6 +3,15 @@
 - name: System details
   debug:
     msg: "{{ ansible_distribution }} {{ ansible_distribution_version }} ({{ ansible_architecture }})"
+  
+- name: Test multi-line output
+  become: yes
+  shell: "ls -l ; whoami"
+  register: ls_result
+
+- name: Print output
+  debug:
+    var: ls_result.stdout_lines
 
 - name: Print debug message
   debug:
@@ -16,19 +25,15 @@
   debug:
     msg: "{{ app_domains|join(', ') }}"
 
-- name: Print value of my_service.db_user
+- name: Print value of hello_world.test_var
   debug:
-    var: my_service.db_user
+    msg: "{{ hello_world.test_var }}"
 
-- name: Print value of my_service.db_user
+- name: Print value of hello_world.test_arr
   debug:
-    msg: "{{ my_defaults.test_var1 }}"
+    msg: "{{ hello_world.test_arr|join('-') }}"
 
-- name: Print value of app_domains
-  debug:
-    msg: "{{ my_defaults.test_arr1|join('-') }}"
-
-- name: Create file in user's home folder
+- name: "Create file in {{ ansible_user }}'s home folder"
   template:
     src: hello_world.txt.j2
     dest: ~/hello_world.txt

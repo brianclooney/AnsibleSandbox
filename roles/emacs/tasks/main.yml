@@ -1,10 +1,12 @@
 ---
 
 - name: Update apt packages
+  become: yes
   apt:
     update_cache: yes
 
 - name: Install emacs
+  become: yes
   apt:
     name: emacs-nox
     state: present
@@ -13,19 +15,15 @@
   ansible.builtin.file:
     path: "{{ item }}"
     state: directory
-    owner: root
-    group: root
     mode: '0770'
   loop:
     - ~/.emacs.d/backups
     - ~/.emacs.d/themes
 
-- name: Copy files to the server
+- name: Copy EMACS files to the server
   copy:
     src: "{{ item.src }}" 
     dest: "{{ item.dest }}"
-    owner: root
-    group: root
     mode: '0664'
   loop:
     - src: .emacs
