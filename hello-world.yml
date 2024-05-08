@@ -2,7 +2,14 @@
 
 - hosts: all
   gather_facts: yes
+
+  pre_tasks:
+    - name: Set application network name
+      set_fact:
+        app_network: "{{ app_name }}-network"
+
   roles:
-    - hello-world
+    - role: hello-world
+      
   vars:
     - doc_contents: "This is the HELLO WORLD test #2"
